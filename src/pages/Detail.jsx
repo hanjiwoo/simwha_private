@@ -10,7 +10,7 @@ import { deleteLetter, editLetter } from "redux/modules/letters";
 export default function Detail() {
   const dispatch = useDispatch();
   const letters = useSelector((state) => state.letters);
-
+  const loginedUser = useSelector((state) => state.authSlice);
   const [isEditing, setIsEditing] = useState(false);
   const [editingText, setEditingText] = useState("");
   const navigate = useNavigate();
@@ -66,8 +66,12 @@ export default function Detail() {
           <>
             <Content>{content}</Content>
             <BtnsWrapper>
-              <Button text="수정" onClick={() => setIsEditing(true)} />
-              <Button text="삭제" onClick={onDeleteBtn} />
+              {letters.userId === loginedUser.userId ? (
+                <>
+                  <Button text="수정" onClick={() => setIsEditing(true)} />
+                  <Button text="삭제" onClick={onDeleteBtn} />
+                </>
+              ) : null}{" "}
             </BtnsWrapper>
           </>
         )}

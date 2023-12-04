@@ -2,8 +2,9 @@ import { useState } from "react";
 import styled from "styled-components";
 import { v4 as uuid } from "uuid";
 import Button from "./common/Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addLetter } from "redux/modules/letters";
+import axios from "axios";
 
 export default function AddForm() {
   // const { setLetters } = useContext(LetterContext);
@@ -12,7 +13,7 @@ export default function AddForm() {
   const [nickname, setNickname] = useState("");
   const [content, setContent] = useState("");
   const [member, setMember] = useState("카리나");
-
+  const loginedUser = useSelector((state) => state.authSlice);
   const onAddLetter = (event) => {
     event.preventDefault();
     if (!nickname || !content) return alert("닉네임과 내용은 필수값입니다.");
@@ -24,8 +25,10 @@ export default function AddForm() {
       avatar: null,
       writedTo: member,
       createdAt: new Date(),
+      userId: loginedUser.userId,
     };
 
+    axios.post("http://localhost:5000/letters", newLetter);
     dispatch(addLetter(newLetter));
     setNickname("");
     setContent("");
@@ -34,7 +37,7 @@ export default function AddForm() {
   return (
     <Form onSubmit={onAddLetter}>
       <InputWrapper>
-        <label>닉네임:</label>
+        <label>닉네임:{loginedUser.nickname}</label>
         <input
           onChange={(event) => setNickname(event.target.value)}
           value={nickname}
